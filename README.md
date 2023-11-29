@@ -1,6 +1,20 @@
+Here we are downloading data specific version of data from gcp cloud
+Faced an issude of _DS_Store after downloading thed data. This is mac specific and was resolved using giignore and dvcignore.
+
+If files are huge we can use google SSD and use git import to download file over there.
+
+
+
+
+
+
+
+
+
 # project_template
 project environment setup template
 
+# gcloud auth application-default login
 
 MAKEFILE
 makefile can make running repetitive commdns easier

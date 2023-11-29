@@ -32,7 +32,11 @@ guard-%:
 
 ## Call entrypoint
 prepare-dataset: up
-	$(DOCKER_COMPOSE_EXEC) python ./cybulde/prepare-dataset.py
+	$(DOCKER_COMPOSE_EXEC) python ./src/prepare-dataset.py
+
+## Call entrypoint
+process-data: up
+	$(DOCKER_COMPOSE_EXEC) python ./src/process_data.py
 
 ## Starts jupyter lab
 notebook: up
