@@ -1,0 +1,89 @@
+# image
+
+FROM python:3.10-slim
+
+# arguments for userid and username.create new user id and username that will running the docker build command to avoid permission issues. file created by docker container will be owned by root user and cannot be modified by host machine
+ARG USER_ID
+ARG USER_NAME
+
+#environment variable
+ENV HOME=/home/${USER_NAME} \
+    VIRTUAL_ENV=/home/${USER_NAME}/venv
+ENV \
+    PYTHONUNBUFFERED = 1 \ 
+    DEBAIN_FRONTEEND = noninteractive \
+    TZ =  Asia/Kolkata \
+    PATH = "/usr/local/gcloud/google-cloud-sdk/bin:${HOME}/.local/bin:${VIRTUAL_ENV}/bin:${PATH}" \
+    PYTHONPATH ="/app:${PYTHONPATH}" \
+    BUILD_POETRY_LOCK = "${HOME}/poetry.lock.build"
+    # make sure python output is not buffered
+    # apt get install command will not ask for user input
+    # time zone
+    # virtual environement path
+    # google sdk path vairable to path variable
+    # application to mount to /app directlry
+    # for poerty we will build poetry lock. we will copy poetry lock to this location and copy from this container and add it to git hub so that other can use it.
+
+# install git,curl, and other dependencies for python iamge
+RUN apt-get -qq update \
+    && apt-get -qq -y install vim gcc curl git build-essential libb64-dev software-properties-common \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get -qq -y clean
+
+
+
+# standard command for gloud and gsutils
+RUN curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-426.0.0-linux-x86_64.tar.gz > /tmp/google-cloud-sdk.tar.gz
+RUN mkdir -p /usr/local/gcloud \
+    && tar -C /usr/local/gcloud -xf /tmp/google-cloud-sdk.tar.gz \
+    && /usr/local/gcloud/google-cloud-sdk/install.sh --usage-reporting false --command-completion true --bash-completion true --path-update true --quiet
+
+#create new user id 
+# create home directory for this user
+# set user as the owner of this home directory
+
+RUN addgroup --system --gid ${USER_ID} ${USER_NAME} \
+    && useradd --system -m --no-log-init --home-dir ${HOME} --uid ${USER_ID} --gid ${USER_NAME} --groups ${USER_NAME} ${USER_NAME}
+
+# change owner of the directory
+RUN chown -R ${USER_NAME}:${USER_NAME} ${HOME}
+RUN mkdir -p /app && chown -R ${USER_NAME}:${USER_NAME} /app /tmp
+
+#install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+  
+# change user to the user name
+USER ${USER_NAME}
+
+# copy proect file and poetry lock file to /app directory
+COPY pyproject.toml *.lock /app/
+# change workign directory to /app
+WORKDIR /app
+
+# instal poetry. 
+# do not build virtual environement by peotry. we will create
+# create virtual env
+# update pip and setup
+# install poetry
+# copy generate poerty lock to build poetry lock location
+# remove cache
+
+RUN poetry config virtualenvs.create false \
+    && python3.11 -m venv ${VIRTUAL_ENV} \
+    && pip install --upgrade pip setuptools \
+    && poetry install && cp poetry.lock ${BUILD_POETRY_LOCK} \
+    && rm -rf ${HOME}/.cache/*
+
+# swith to root user
+USER root
+# copy docker scripts to root directory
+COPY ./docker/scripts/* /
+# change owner to user name and make script executable
+RUN chown -R ${USER_NAME} /*.sh && chmod +x /*.sh
+# switch to startup script
+USER ${USER_NAME}
+
+# copy everything to /app
+COPY . /app/
+# run docker script copied to root director
+CMD ["/startup-script.sh"]

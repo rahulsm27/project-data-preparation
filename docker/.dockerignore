@@ -1,0 +1,12 @@
+# ignore everything
+* 
+
+# except for below
+# main application
+!src
+# for poetry build
+!pyproject.toml
+# for poetry build
+!poetry.lock
+
+!docker
