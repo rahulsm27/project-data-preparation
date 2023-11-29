@@ -25,6 +25,7 @@ dask-ml = "~=2023.3"
 
 
 [tool.poetry.group.dev.dependencies]
+jupyterlab ="~=4.0.9"
 pytest = "~=7.3"
 black = "~23.3"
 isort = "~=5.12"
