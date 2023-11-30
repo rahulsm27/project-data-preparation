@@ -3,6 +3,7 @@ from pydantic.dataclasses import dataclass
 from omegaconf import MISSING
 from src.config_schemas.infrastructure import gcp_schema 
 from src.config_schemas.data_processing import dataset_readers_schema
+from src.config_schemas.data_processing import dataset_cleaners_schema
 @dataclass
 class DataProcessingConfig:
     version : str = MISSING
@@ -16,10 +17,12 @@ class DataProcessingConfig:
 
     dataset_reader_manager : dataset_readers_schema.DatasetReaderManagerConfig = MISSING
 
+    dataset_cleaner_manager : dataset_cleaners_schema.DatasetCleanerManagerConfig = MISSING
 
 def setup_config() -> None:
     gcp_schema.setup_config()
     dataset_readers_schema.setup_config()
+    dataset_cleaners_schema.setup_config()
     
     cs = ConfigStore.instance()
     cs.store(name="data_processing_config_schema", node=DataProcessingConfig)

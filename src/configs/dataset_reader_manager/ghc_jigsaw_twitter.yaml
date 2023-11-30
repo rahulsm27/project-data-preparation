@@ -3,3 +3,25 @@ defaults :
   - dataset_reader@dataset_readers.ghc: ghc
   - dataset_reader@dataset_readers.jtc: jtc
   - dataset_reader@dataset_readers.twitter: twitter
+
+
+#   The first part (before @dataset_readers... ) refers to the Hydra group. So, there should be a directory within this directory called dataset_reader. For now don't think about what is @dataset_readers.ghc. Normally, if you wanted to choose a config file within a Hydra group, how would you do it? You would do something like this: dataset_reader: ghc . The part makes this statement a little bit difficult to understand is @dataset_readers.ghc in between the Hydra group name dataset_reader and the config file you would like to use ghc. What you do with this statement is: you say that you would like to use ghc config file from dataset_reader group, but, you would like to rename this key to be dataset_readers.ghc . Because dataset_readers is a dict like structure, you can assign a key for it using the dot . syntax. Using this renaming convension converts this:
+
+# dataset_reader:
+#   key1: value1
+#   key2: value2
+
+
+# into this:
+
+# dataset_readers:
+#   ghc:
+#     key1: value1
+#     key2: value2
+# ...
+
+
+# Assuming that in dataset_reader/ghc.yaml file you have this:
+
+# key1: value1
+# key2: value2
