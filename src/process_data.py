@@ -11,11 +11,11 @@ def process_data(config: DataProcessingConfig) -> None:
     from omegaconf import OmegaConf
     print(OmegaConf.to_yaml(config))
 
-    dataset_reader_manager = instantiate(config.dataset_reader_manager)
+    # dataset_reader_manager = instantiate(config.dataset_reader_manager)
 
-    df = dataset_reader_manager.read_data()
+    # df = dataset_reader_manager.read_data()
 
-    print(df.head())
+    # print(df.head())
 
     # github_access_token = access_secret_version(config.infrastructure.project_id,config.github_access_token_secret_id)
 
