@@ -8,5 +8,5 @@ class GCPConfig:
 
 
 def setup_config() -> None:
-    cs = ConfigStore.isntance()
+    cs = ConfigStore.instance()
     cs.store(name="gcp_config_schem",node=GCPConfig)
