@@ -3,10 +3,9 @@ Faced an issude of _DS_Store after downloading thed data. This is mac specific a
 
 If files are huge we can use google SSD and use git import to download file over there.
 
-
-
-
-
+make exec-in
+gcloud config set project mlendtoend
+gcloud auth application-default login --no-launch-browser
 
 
 

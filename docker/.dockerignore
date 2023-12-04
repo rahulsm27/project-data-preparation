@@ -10,3 +10,5 @@
 !poetry.lock
 
 !docker
+
+#!../Users/rahulmahajan/.config/gcloud/

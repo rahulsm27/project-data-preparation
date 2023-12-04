@@ -23,7 +23,8 @@ services:
 
     volumes : # during project building we are going to mount our project directory to docker container so that changes done in project is avialable in docker
       - ./:/app/
-      - ~/.config/gcloud:/home/{USER_NAME}/.config/gcloud
+      - ~/.config/gcloud/:/home/{USER_NAME}/.config/gcloud
+      
   # gclodu credentials mapped to docker container so that automatically authenticated in container
     ports :
       - 8888:8888

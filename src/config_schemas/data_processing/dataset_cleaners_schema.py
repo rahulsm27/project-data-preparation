@@ -9,7 +9,7 @@ from pydantic.dataclasses import dataclass
 
 @dataclass
 class SpellCorrectionModelConfig:
-    _target_: str = "cybulde.utils.utils.SpellCorrectionModel"
+    _target_: str = "src.utils.utils.SpellCorrectionModel"
     max_dictionary_edit_distance: int = 2
     prefix_length: int = 7
     count_threshold: int = 1

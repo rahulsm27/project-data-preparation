@@ -54,4 +54,6 @@ RUN python3.10 -m nltk.downloader stopwords \
     && python3.10 -m nltk.downloader punkt
 
 COPY . /app/
+#COPY /Users/rahulmahajan/.config/gcloud /home/${USER_NAME}/.config/gcloud/
+COPY pyproject.toml *.lock /app/
 CMD ["/startup-script.sh"]
