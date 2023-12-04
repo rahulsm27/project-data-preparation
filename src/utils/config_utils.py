@@ -65,7 +65,14 @@ def setup_logger() -> None:
         config = yaml.load(stream, Loader=yaml.FullLoader)
     logging.config.dictConfig(config)
 
+def config_args_parser() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument("--config-path", type=str, default="../configs/", help="Directory of the config files")
+    parser.add_argument("--config-name", type=str, required=True, help="Name of the config file")
+    parser.add_argument("--overrides", nargs="*", help="Hydra config overrides", default=[])
+
+    return parser.parse_args()
 def compose_config(config_path: str, config_name: str, overrides: Optional[list[str]] = None) -> Any:
     setup_config()
     setup_logger()
@@ -91,3 +98,24 @@ def save_config_as_pickle(config: Any, save_path: str) -> None:
     pickle.dump(config, bytes_io)
     with open_file(save_path, "wb") as f:
         f.write(bytes_io.getvalue())
+
+
+def custom_instantiate(config: Any) -> Any:
+    config_as_dict = asdict(config)
+    if "_target_" not in config_as_dict:
+        raise ValueError("Config does not have _target_ key")
+
+    _target_ = config_as_dict["_target_"]
+    _partial_ = config_as_dict.get("_partial_", False)
+
+    config_as_dict.pop("_target_", None)
+    config_as_dict.pop("_partial_", None)
+
+    splitted_target = _target_.split(".")
+    module_name, class_name = ".".join(splitted_target[:-1]), splitted_target[-1]
+
+    module = importlib.import_module(module_name)
+    _class = getattr(module, class_name)
+    if _partial_:
+        return partial(_class, **config_as_dict)
+    return _class(**config_as_dict)

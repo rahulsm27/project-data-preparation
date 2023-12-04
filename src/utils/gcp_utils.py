@@ -1,7 +1,7 @@
 from google.cloud import secretmanager
 
 
-def access_secret_version(Project_id: str, secret_id: str, version_id: str = "1") -> str:
+def access_secret_version(Project_id: str, secret_id: str, version_id: str = "3") -> str:
     """
     Access the payload for the given secret version
     """

@@ -10,6 +10,8 @@ services:
     hostname: "${HOST:-Rahul}" # hostname of the container
     image: project-data-processing   # image to be called
     container_name : project-data-processing-container
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=./creds/mlendtoend-f6536e1fca41.json
     build:
       context : .
       dockerfile : ./docker/Dockerfile # where is the docker file

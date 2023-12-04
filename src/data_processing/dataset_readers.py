@@ -7,7 +7,7 @@ import dask.dataframe as dd
 
 from dask_ml.model_selection import train_test_split
 from dvc.api import get_url
-from src.utils.utils import get_loggerf
+from src.utils.utils import get_logger
 from src.utils.data_utils import get_repo_address_with_access_token
 from src.utils.data_utils import repartition_dataframe
 
@@ -126,6 +126,7 @@ class JigsawToxicCommentsDatasetReader(DatasetReader):
         self.columns_for_label = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
 
     def _read_data(self) -> tuple[dd.core.DataFrame, dd.core.DataFrame, dd.core.DataFrame]:
+        self.logger.info("Reading Jigsaw data")
         test_csv_path = os.path.join(self.dataset_dir, "test.csv")
         test_csv_url = self.get_remote_data_url(test_csv_path)
         test_df = dd.read_csv(test_csv_url)
@@ -182,6 +183,7 @@ class TwitterDatasetReader(DatasetReader):
         self.test_split_ratio = test_split_ratio
 
     def _read_data(self) -> tuple[dd.core.DataFrame, dd.core.DataFrame, dd.core.DataFrame]:
+        self.logger.info("Reading Twitter data")
         train_csv_path = os.path.join(self.dataset_dir, "cyberbullying_tweets.csv")
         train_csv_url = self.get_remote_data_url(train_csv_path)
         df = dd.read_csv(train_csv_url)

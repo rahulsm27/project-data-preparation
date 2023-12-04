@@ -22,7 +22,7 @@ DOCKER_COMPOSE_RUN = $(DOCKER_COMPOSE_COMMAND) run --rm $(SERVICE_NAME)
 #--rm: This flag tells Docker Compose to remove the container after it exits. It helps to keep things clean by removing temporary containers.
 DOCKER_COMPOSE_EXEC = $(DOCKER_COMPOSE_COMMAND) exec $(SERVICE_NAME)
 
-GCP_DOCKER_IMAGE_NAME = europe-west4-docker.pkg.dev/mlendtoend/src/src-data-preparation
+GCP_DOCKER_IMAGE_NAME = europe-west4-docker.pkg.dev/mlendtoend/mlflow/src-data-preparation
 
 GCP_DOCKER_IMAGE_TAG := $(strip $(shell uuidgen)) # : makes values fixed otheriwse it gets executed in each run
 

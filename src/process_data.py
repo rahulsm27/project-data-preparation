@@ -2,7 +2,10 @@ from hydra.utils import instantiate
 from dask.distributed import Client
 import dask.dataframe as dd
 from src.config_schemas.data_processing_config_schema import DataProcessingConfig
-from src.utils.config_utils import get_config
+from src.config_schemas.data_processing.dataset_cleaners_schema import DatasetCleanerManagerConfig
+
+
+from src.utils.config_utils import get_config,custom_instantiate
 from src.utils.data_utils import get_raw_data_with_version
 from src.utils.gcp_utils import access_secret_version
 from src.utils.config_utils import get_pickle_config
@@ -26,24 +29,26 @@ def process_data(config: DataProcessingConfig) -> None:
     logger.info("Processing raw data...")
 
 
-    cluster = instantiate(config.dask_cluster)
+    cluster = custom_instantiate(config.dask_cluster)
     client = Client(cluster)
     try :
-        github_access_token = access_secret_version(config.infrastructure.project_id,config.github_access_token_secret_id)
+        # github_access_token = access_secret_version(config.infrastructure.project_id,config.github_access_token_secret_id)
         
-        process_data_save_dir = config.processed_data_save_dir
+        # process_data_save_dir = config.processed_data_save_dir
 
-        get_raw_data_with_version(version=config.version,
-                              data_local_save_dir=config.data_local_save_dir,
-                              dvc_remote_repo=config.dvc_remote_repo,
-                              dvc_data_folder=config.dvc_data_folder,
-                              github_user_name=config.github_user_name,
-                              github_access_token=github_access_token)
+        # get_raw_data_with_version(version=config.version,
+        #                       data_local_save_dir=config.data_local_save_dir,
+        #                       dvc_remote_repo=config.dvc_remote_repo,
+        #                       dvc_data_folder=config.dvc_data_folder,
+        #                       github_user_name=config.github_user_name,
+        #                       github_access_token=github_access_token)
 
         dataset_reader_manager = instantiate(config.dataset_reader_manager)
         dataset_cleaner_manager = instantiate(config.dataset_cleaner_manager)
         df = dataset_reader_manager.read_data(config.dask_cluster.n_workers)
         
+        print(df.compute().head())
+        exit()
         logger.info("Cleaning data...")
 
 
