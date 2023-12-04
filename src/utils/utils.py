@@ -7,6 +7,7 @@ import symspellpy
 
 from symspellpy import SymSpell
 
+
 def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(f"[{socket.gethostname()}{name}")
 
