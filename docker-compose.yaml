@@ -8,8 +8,8 @@ services:
   app:
     user: "${USER_ID:-1000}"   # environment variable uid
     hostname: "${HOST:-Rahul}" # hostname of the container
-    image: project-data-preparation   # image to be called
-    container_name : project-data-preparation-container
+    image: project-data-processing   # image to be called
+    container_name : project-data-processing-container
     build:
       context : .
       dockerfile : ./docker/Dockerfile # where is the docker file

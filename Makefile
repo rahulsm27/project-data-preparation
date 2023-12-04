@@ -15,12 +15,19 @@ else
 endif
 
 SERVICE_NAME = app
-CONTAINER_NAME = project-data-preparation-container
+CONTAINER_NAME = project-data-processing-container
 
 DIRS_TO_VALIDATE = src
 DOCKER_COMPOSE_RUN = $(DOCKER_COMPOSE_COMMAND) run --rm $(SERVICE_NAME)
 #--rm: This flag tells Docker Compose to remove the container after it exits. It helps to keep things clean by removing temporary containers.
 DOCKER_COMPOSE_EXEC = $(DOCKER_COMPOSE_COMMAND) exec $(SERVICE_NAME)
+
+GCP_DOCKER_IMAGE_NAME = europe-west4-docker.pkg.dev/mlendtoend/src/src-data-preparation
+
+GCP_DOCKER_IMAGE_TAG := $(strip $(shell uuidgen)) # : makes values fixed otheriwse it gets executed in each run
+
+LOCAL_DOCKER_IMAGE_TAG = src-data-processing
+
 # exec: This is a Docker Compose command that is used to execute a command in a running container.
 # $(SERVICE_NAME): This is another variable reference, and it likely holds the name of the service in which you want to execute a command.
 # to export our environment variables declared above to be read by docker compe file
@@ -30,13 +37,34 @@ export
 guard-%:
 	@#$(or ${$*}, $(error $* is not set))
 
+## Generate final config. CONFIG_NAME=<config_name> has to be providded. For overrides use: OVERRIDES=<overrides>
+generate-final-config: up guard-CONFIG_NAME
+	$(DOCKER_COMPOSE_EXEC) python ./src/generate_final_config.py --config-name $${CONFIG_NAME} --overrides docker_image_name=$(GCP_DOCKER_IMAGE_NAME) docker_image_tag=$(GCP_DOCKER_IMAGE_TAG) $${OVERRIDES}
+
+## Generate final data processing config. For overrides use: OVERRIDES=<overrides>
+generate-final-data-processing-config: up
+	$(DOCKER_COMPOSE_EXEC) python ./src/generate_final_config.py --config-name data_processing_config --overrides docker_image_name=$(GCP_DOCKER_IMAGE_NAME) docker_image_tag=$(GCP_DOCKER_IMAGE_TAG) $${OVERRIDES}
+
+## Generate final tokenizer training config. For overrides use: OVERRIDES=<overrides>
+generate-final-tokenizer-training-config: up
+	$(DOCKER_COMPOSE_EXEC) python ./src/generate_final_config.py --config-name tokenizer_training_config --overrides docker_image_name=$(GCP_DOCKER_IMAGE_NAME) docker_image_tag=$(GCP_DOCKER_IMAGE_TAG) $${OVERRIDES}
+
 ## Call entrypoint
 prepare-dataset: up
 	$(DOCKER_COMPOSE_EXEC) python ./src/prepare-dataset.py
 
 ## Call entrypoint
-process-data: up
+process-data: generate-final-data-processing-config push
 	$(DOCKER_COMPOSE_EXEC) python ./src/process_data.py
+
+local-process-data: generate-final-data-processing-config
+	$(DOCKER_COMPOSE_EXEC) python ./src/process_data.py
+
+## push docker image to GCP artifact registery
+push:build
+	glcoud auth configure-docker --quiet europe-west4-docker.pkg.dev
+	docker tag $(LOCAL_DOCKER_IMAGE_TAG):latest "$(GCP_DOCKER_IMAGE_NAME):$(GCP_DOCKER_IMAGE_TAG)"
+	docker push "$(GCP_DOCKER_IMAGE_NAME):$(GCP_DOCKER_IMAGE_TAG)"
 
 ## Starts jupyter lab
 notebook: up

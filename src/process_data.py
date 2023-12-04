@@ -5,7 +5,7 @@ from src.config_schemas.data_processing_config_schema import DataProcessingConfi
 from src.utils.config_utils import get_config
 from src.utils.data_utils import get_raw_data_with_version
 from src.utils.gcp_utils import access_secret_version
-
+from src.utils.config_utils import get_pickle_config
 from src.utils.utils import get_logger
 from pathlib import Path
 
@@ -15,7 +15,7 @@ def process_raw_data(df_partition : dd.core.DataFrame, dataset_cleaner_manager :
     return df_partition["text"].apply(dataset_cleaner_manager)
 
 # custom decorator created
-@get_config(config_path="../configs", config_name="data_processing_config")
+@get_pickle_config(config_path="src/configs/automatically_generated", config_name="data_processing_config")
 def process_data(config: DataProcessingConfig) -> None:
     # print(config)
     # from omegaconf import OmegaConf
