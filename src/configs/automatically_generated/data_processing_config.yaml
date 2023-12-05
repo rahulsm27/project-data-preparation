@@ -30,7 +30,7 @@ dataset_reader_manager:
       dvc_remote_repo: https://github.com/rahulsm27/project_dvc.git
       github_user_name: rahulsm27
       version: v8
-      dev_split_ratio: 0.06
+      dev_split_ratio: 0.03
     twitter:
       _target_: src.data_processing.dataset_readers.TwitterDatasetReader
       dataset_dir: ./data/raw/cyberbull
@@ -40,8 +40,8 @@ dataset_reader_manager:
       dvc_remote_repo: https://github.com/rahulsm27/project_dvc.git
       github_user_name: rahulsm27
       version: v8
-      dev_split_ratio: 0.25
-      test_split_ratio: 0.2
+      dev_split_ratio: 0.125
+      test_split_ratio: 0.1
   repartition: true
   available_memory: 3750000000.0
 dataset_cleaner_manager:
@@ -66,13 +66,6 @@ dataset_cleaner_manager:
       _target_: src.data_processing.dataset_cleaners.ReferanceToAccountDatasetCleaner
     re_tweet:
       _target_: src.data_processing.dataset_cleaners.ReTweetDatasetCleaner
-    spell_correction:
-      _target_: src.data_processing.dataset_cleaners.SpellCorrectionDatasetCleaner
-      spell_correction_model:
-        _target_: src.utils.utils.SpellCorrectionModel
-        max_dictionary_edit_distance: 2
-        prefix_length: 7
-        count_threshold: 1
 dask_cluster:
   _target_: dask_cloudprovider.gcp.GCPCluster
   n_workers: 3
@@ -82,7 +75,7 @@ dask_cluster:
   network_projectid: mlendtoend
   machine_type: n1-standard-1
   source_image: projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2004-focal-v20220203
-  docker_image: europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation:40B28CFD-CFA5-4D6F-BDE9-0C49BB63761B
+  docker_image: europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation:BAB3B694-ECEE-4623-BE92-4C2BE959AD59
   docker_args: '--log-driver=gcplogs
 
     '
@@ -104,7 +97,8 @@ dask_cluster:
   preemptible: false
   debug: false
   instance_labels: null
-processed_data_save_dir: gs://cyberbully_r/data/processed/$(run_tag)
+processed_data_save_dir: gs://cyberbully_r/data/processed/default_run
 run_tag: default_run
 docker_image_name: europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation
-docker_image_tag: 40B28CFD-CFA5-4D6F-BDE9-0C49BB63761B
+docker_image_tag: BAB3B694-ECEE-4623-BE92-4C2BE959AD59
+min_nrof_words: 2

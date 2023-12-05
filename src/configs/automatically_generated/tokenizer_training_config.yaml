@@ -1,0 +1,9 @@
+infrastructure:
+  project_id: mlendtoend
+  zone: europe-west4-b
+  network: default
+data_parquet_path: gs://cyberbully_r/data/processed/default_run/dev.parquet
+text_column_name: cleaned_name
+docker_image_name: europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation
+docker_image_tag: 7E7C7865-1983-4CB4-BF5A-5997716A6A3F
+min_nrof_words: 2

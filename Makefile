@@ -60,6 +60,14 @@ process-data: generate-final-data-processing-config push
 local-process-data: generate-final-data-processing-config
 	$(DOCKER_COMPOSE_EXEC) python ./src/process_data.py
 
+
+train-tokenizer:generate-final-tokenizer-training-config push
+	$(DOCKER_COMPOSE_EXEC) python ./src/train_tokenizer.py
+	
+#train a tokenzier locally
+local-train-tokenizer:generate-final-tokenizer-training-config 
+	$(DOCKER_COMPOSE_EXEC) python ./src/train_tokenizer.py
+
 ## push docker image to GCP artifact registery
 push:build
 	gcloud auth configure-docker --quiet europe-west4-docker.pkg.dev

@@ -1,0 +1,16 @@
+defaults:
+  - tokenizer_training_config_schema
+
+  - override hydra/job_logging: custom
+  - override hydra/hydra_logging: disabled
+
+
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+data_parquet_path : gs://cyberbully_r/data/processed/default_run/dev.parquet
+text_column_name : cleaned_name
