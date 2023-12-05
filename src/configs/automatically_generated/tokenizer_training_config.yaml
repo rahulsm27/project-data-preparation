@@ -2,8 +2,40 @@ infrastructure:
   project_id: mlendtoend
   zone: europe-west4-b
   network: default
-data_parquet_path: gs://cyberbully_r/data/processed/default_run/dev.parquet
-text_column_name: cleaned_name
+data_parquet_path: gs://cyberbully_r/data/processed/default_run/train.parquet
+text_column_name: cleaned_text
+tokenizer:
+  _target_: src.tokenization.tokenizers.HuggingFaceTokenizer
+  pre_tokenizer:
+    _target_: tokenizers.pre_tokenizers.Whitespace
+  model:
+    _target_: tokenizers.models.BPE
+    vocab: null
+    merges: null
+    cache_capacity: 10000
+    dropout: null
+    unk_token: '[UNK]'
+    fuse_unk: false
+  trainer:
+    _target_: tokenizers.trainers.BpeTrainer
+    vocab_size: 30000
+    show_progress: true
+    min_frequency: 0
+    special_tokens:
+    - '[UNK]'
+    - '[CLS]'
+    - '[SEP]'
+    - '[PAD]'
+    - '[MASK]'
+    initial_alphabet: []
+  normalizer: null
+  decoder: null
+  post_processor: null
+  unk_token: '[UNK]'
+  cls_token: '[CLS]'
+  sep_token: '[SEP]'
+  pad_token: '[PAD]'
+  mask_token: '[MASK]'
 docker_image_name: europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation
-docker_image_tag: 7E7C7865-1983-4CB4-BF5A-5997716A6A3F
+docker_image_tag: 4B8BAAE4-2586-4010-A733-DFE89FFE1F7D
 min_nrof_words: 2

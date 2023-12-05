@@ -15,7 +15,8 @@ import pandas as pd
 # custom decorator created
 @get_pickle_config(config_path="src/configs/automatically_generated", config_name="tokenizer_training_config")
 def train_tokenizer(config: TokenizerTrainingConfig) -> None:
-  #  print(config)
+    # print(config)
+    # exit()
     # from omegaconf import OmegaConf
     # print(OmegaConf.to_yaml(config))
     logger = get_logger(Path(__file__).name)
@@ -25,8 +26,8 @@ def train_tokenizer(config: TokenizerTrainingConfig) -> None:
     text_column_name = config.text_column_name
 
 
-    tokenizer = instantiate(config.tokenizer)
-
+    tokenizer = instantiate(config.tokenizer,_convert_ = "all")
+  #  exit()
     logger.info("Reading dataset")
 
     df = pd.read_parquet(data_parquet_path)
@@ -34,8 +35,8 @@ def train_tokenizer(config: TokenizerTrainingConfig) -> None:
     logger.info("Starting training...")
     tokenizer.train(df[text_column_name].values)
 
-    logger.info("Savubg tokenizer...")
-    tokenizer_save_dir = os.path.join(os.path.dirname(data_parquet_path),"trainer_tokenizer")
+    logger.info("Saving tokenizer...")
+    tokenizer_save_dir = os.path.join(os.path.dirname(data_parquet_path),"trained_tokenizer")
     tokenizer.save(tokenizer_save_dir)
 
     docker_info = {"docker_image": config.docker_image_name, "docker_tag": config.docker_image_tag}

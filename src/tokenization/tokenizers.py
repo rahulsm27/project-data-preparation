@@ -13,7 +13,7 @@ from tokenizers.processors import BertProcessing, ByteLevel, RobertaProcessing, 
 from tokenizers.trainers import BpeTrainer, UnigramTrainer, WordLevelTrainer, WordPieceTrainer
 from transformers import PreTrainedTokenizerFast
 
-from cybulde.utils.io_utils import copy_dir
+from src.utils.io_utils import copy_dir
 
 TrainerType = Union[BpeTrainer, UnigramTrainer, WordLevelTrainer, WordPieceTrainer]
 PostProcessorType = Union[BertProcessing, ByteLevel, RobertaProcessing, TemplateProcessing]
