@@ -3,6 +3,6 @@ defaults:
 
 dataset_dir : ${data_local_save_dir}/cyberbull
 dataset_name : twitter
-dev_split_ratio : 0.25
-test_split_ratio : 0.2
+dev_split_ratio : 0.125
+test_split_ratio : 0.1
 

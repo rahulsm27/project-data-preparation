@@ -22,11 +22,11 @@ DOCKER_COMPOSE_RUN = $(DOCKER_COMPOSE_COMMAND) run --rm $(SERVICE_NAME)
 #--rm: This flag tells Docker Compose to remove the container after it exits. It helps to keep things clean by removing temporary containers.
 DOCKER_COMPOSE_EXEC = $(DOCKER_COMPOSE_COMMAND) exec $(SERVICE_NAME)
 
-GCP_DOCKER_IMAGE_NAME = europe-west4-docker.pkg.dev/mlendtoend/mlflow/src-data-preparation
+GCP_DOCKER_IMAGE_NAME = europe-west4-docker.pkg.dev/mlendtoend/mlflow/project-data-preparation
 
-GCP_DOCKER_IMAGE_TAG := $(strip $(shell uuidgen)) # : makes values fixed otheriwse it gets executed in each run
+GCP_DOCKER_IMAGE_TAG := $(strip $(shell uuidgen))# : makes values fixed otheriwse it gets executed in each run
 
-LOCAL_DOCKER_IMAGE_TAG = src-data-processing
+LOCAL_DOCKER_IMAGE_TAG = project-data-processing
 
 # exec: This is a Docker Compose command that is used to execute a command in a running container.
 # $(SERVICE_NAME): This is another variable reference, and it likely holds the name of the service in which you want to execute a command.
@@ -62,7 +62,7 @@ local-process-data: generate-final-data-processing-config
 
 ## push docker image to GCP artifact registery
 push:build
-	glcoud auth configure-docker --quiet europe-west4-docker.pkg.dev
+	gcloud auth configure-docker --quiet europe-west4-docker.pkg.dev
 	docker tag $(LOCAL_DOCKER_IMAGE_TAG):latest "$(GCP_DOCKER_IMAGE_NAME):$(GCP_DOCKER_IMAGE_TAG)"
 	docker push "$(GCP_DOCKER_IMAGE_NAME):$(GCP_DOCKER_IMAGE_TAG)"
 
